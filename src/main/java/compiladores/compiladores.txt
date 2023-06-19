@@ -1,0 +1,156 @@
+grammar compiladores;
+
+@header {
+package compiladores;
+}
+
+fragment LETRA : [A-Za-z] ;
+fragment DIGITO : [0-9] ;
+
+PYC : ';' ;
+PA  : '(' ;
+PC  : ')' ;
+LLA : '{' ;
+LLC : '}' ;
+CA : '[' ;
+CC : ']' ;
+EQ : '=' ;
+COMA  : ',' ;
+SUMA  : '+' ;
+RESTA : '-' ;
+MULT  : '*' ;
+DIV   : '/' ;
+MOD   : '%' ;
+DEQ : '==' ;
+AND : '&&' ; 
+OR : '||'; 
+GT : '>' ; 
+LT : '<'; 
+GTE : '>=' ; 
+LTE : '<=';
+
+NUMERO : DIGITO+ ;
+
+IF : 'if' ;
+INT : 'int' ;
+FOR : 'for' ;
+CHAR : 'char';
+ELSE: 'else';
+VOID: 'void';
+FLOAT : 'float';
+WHILE: 'while';
+DOUBLE : 'double';
+RETURN : 'return';
+
+ID : (LETRA | '_')(LETRA | DIGITO | '_')* ;
+WS : [ \t\n\r] -> skip ;
+
+programa : instrucciones EOF ;
+
+instrucciones : instruccion instrucciones
+              |
+              ;
+
+instruccion : bloque
+            | asignacion
+            | declaracion
+            | declaracion_f
+            | call_f
+            | return_i
+            | while_i
+            | for_i
+            | if_i
+            ;
+
+bloque : LLA instrucciones LLC ;
+
+return_i : RETURN expresion PYC ;
+
+while_i : WHILE PA expresion PC instruccion ;
+
+for_i : FOR PA expresion_for PYC expresion_for PYC expresion_for PC instruccion ;
+
+if_i : IF PA expresion PC instruccion else_if;
+
+else_if : ELSE instruccion
+        |
+        ;
+
+expresion_for : expresion listaexpresion
+              |
+              ;
+
+asignacion : ID EQ expresion PYC;
+
+declaracion : tipodato ID inicializacion listaid PYC ;
+
+declaracion_f : returndato_f ID PA params_f PC declaracion_f_end ;
+
+returndato_f : tipodato
+             | VOID
+             ;
+
+declaracion_f_end : PYC
+                  | bloque
+                  ;
+
+params_f : tipodato ID listaparams_f
+         |
+         ;
+
+listaparams_f : COMA tipodato ID listaparams_f
+              |
+              ;
+
+call_f : ID PA params_call_f PC PYC ;
+
+call_f_factor : ID PA params_call_f PC ;
+
+params_call_f : expresion listaexpresion
+              |
+              ;
+
+tipodato : INT
+         | FLOAT
+         | DOUBLE
+         | CHAR
+         ;
+
+tipoasigacion : NUMERO
+              | ID
+              ;
+
+inicializacion : EQ expresion
+               |
+               ;
+
+listaid : COMA ID inicializacion listaid
+        |
+        ;
+
+// X = ( 3 + 5 ) / 4; // ID ASSIGN expresion PYC
+
+expresion : termino exp ;
+
+listaexpresion : COMA expresion listaexpresion
+               |
+               ;
+
+exp : SUMA  termino exp
+    | RESTA termino exp
+    |
+    ;
+
+termino : factor term ;
+
+term : MULT factor term
+     | DIV  factor term
+     | MOD  factor term
+     |
+     ;
+
+factor : NUMERO
+       | ID
+       | call_f_factor
+       | PA expresion PC 
+       ;
