@@ -94,8 +94,15 @@ listaexpfor : COMA exp_for listaexpfor
 
 asignacion_npyc : ID EQ expresion ;
 
-asignacion : ID EQ expresion PYC
-           | id_factor PYC
+asignacion : asign_type listaasign PYC
+           ;
+
+asign_type : ID EQ expresion
+           | id_factor
+           ;
+
+listaasign : COMA asign_type listaasign
+           |
            ;
 
 declaracion : tipodato ID inicializacion listaid PYC ;
