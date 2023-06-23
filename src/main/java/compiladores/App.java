@@ -1,6 +1,10 @@
 package compiladores;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -21,8 +25,14 @@ public class App {
         // create a parser that feeds off the tokens buffer
         compiladoresParser parser = new compiladoresParser(tokens);
 
-        // SymbolTable tablaSimbolos = SymbolTable.getInstance("tabla_test");
-        // Variable gege = new Variable("test1", false, false, "int");
+        SymbolTable tablaSimbolos = SymbolTable.getInstance("tabla_test");
+        tablaSimbolos.addContext();
+        // Variable varTest = new Variable("test1", false, false, "int");
+        // List<String> args2 = new ArrayList<>(); args2.add("5"); args2.add("testParam");
+        // Function funcTest = new Function("test1", false, false, "int", args2);
+        // tablaSimbolos.addSymbol("varKeyTest", varTest, -1);
+        // tablaSimbolos.addSymbol("funcKeyTest", funcTest, -1);
+        // tablaSimbolos.printContexts();
                 
         // create Listener
         compiladoresBaseListener escucha = new Escucha();

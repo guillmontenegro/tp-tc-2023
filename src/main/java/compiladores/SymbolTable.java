@@ -1,5 +1,6 @@
 package compiladores;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +8,7 @@ import java.util.Map;
 public final class SymbolTable {
     private static SymbolTable instance;
     public String value;
-    public List<Map<String, Id>> contexts;
+    public List<Map<String, Id>> contexts = new ArrayList<>();
 
     private SymbolTable(String value) {
         this.value = value;
@@ -28,43 +29,32 @@ public final class SymbolTable {
         this.contexts.add(new HashMap<String, Id>());
     }
 
+    public void printContexts() {
+        int index = 0;
+        for (Map<String, Id> map : contexts) {
+            System.out.println("Contexto: " + index);
+            for (Map.Entry<String, Id> entry : map.entrySet()) {
+                System.out.println("Clave: " + entry.getKey() + ", Valor: " + entry.getValue().toString());
+            }
+            index++;
+        }
+    }
+
     public void removeContext(int pos) {
         this.contexts.remove(pos);
     }
 
-    public void addSymbol(int contextPos, String key, Id value) {
-        // Map<String, Id> symbol = this.contexts.get(contextPos);
-        // symbol.put(key, value);
-        // Map<String, Id> symbol2 = this.contexts.get(contextPos);
-        // System.out.println(symbol2.get(key).dataType);
+    public void addSymbol(String key, Id value, int contextPos) {
+        int contextsSize = this.contexts.size();
+        if (contextsSize > 0) {
+            if (contextPos < 0) contextPos = contextsSize - 1;
+            Map<String, Id> context = this.contexts.get(contextPos);
+            context.put(key, value);
+            // System.out.println("Clave: " + key + ", Valor: " + value + ", contextPos: " + contextPos);
+        }
+        else {
+            System.err.println("SymbolTable.addSymbol err: contexts.size es 0");
+        }
     }
 
-}
-
-abstract class Id {
-    String name;
-    Boolean initialized;
-    Boolean used;
-    String dataType;
-}
-
-class Variable extends Id {
-
-    public Variable (String name, Boolean initialized, Boolean used, String dataType) {
-        this.name = name;
-        this.initialized = initialized;
-        this.used = used;
-        this.dataType = dataType;
-    }
-
-}
-
-class Function extends Id {
-
-    public Function (String name, Boolean initialized, Boolean used, String dataType) {
-        this.name = name;
-        this.initialized = initialized;
-        this.used = used;
-        this.dataType = dataType;
-    }
 }
