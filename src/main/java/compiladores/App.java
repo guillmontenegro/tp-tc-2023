@@ -21,8 +21,8 @@ public class App {
         // create a parser that feeds off the tokens buffer
         compiladoresParser parser = new compiladoresParser(tokens);
 
-        SymbolTable tablaSimbolos = SymbolTable.getInstance("tabla_test");
-        Variable gege = new Variable("test1", false, false, "int");
+        // SymbolTable tablaSimbolos = SymbolTable.getInstance("tabla_test");
+        // Variable gege = new Variable("test1", false, false, "int");
                 
         // create Listener
         compiladoresBaseListener escucha = new Escucha();

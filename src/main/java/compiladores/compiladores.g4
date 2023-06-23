@@ -33,8 +33,6 @@ LTE : '<=';
 INC : '++';
 DEC : '--';
 
-NUMERO : DIGITO+ ;
-
 IF : 'if' ;
 INT : 'int' ;
 FOR : 'for' ;
@@ -45,6 +43,9 @@ FLOAT : 'float';
 WHILE: 'while';
 DOUBLE : 'double';
 RETURN : 'return';
+
+
+NUMERO : DIGITO+ ;
 
 ID : (LETRA | '_')(LETRA | DIGITO | '_')* ;
 WS : [ \t\n\r] -> skip ;
@@ -58,7 +59,6 @@ instrucciones : instruccion instrucciones
 instruccion : bloque
             | asignacion
             | declaracion
-            | declaracion_f
             | call_f
             | return_i
             | while_i
@@ -105,17 +105,35 @@ listaasign : COMA asign_type listaasign
            |
            ;
 
-declaracion : tipodato ID inicializacion listaid PYC ;
+declaracion : tipodato ID dec_types ;
 
-declaracion_f : returndato_f ID PA params_f PC declaracion_f_end ;
+dec_types : dec_var
+          | dec_f_pyc
+          | dec_f_blk
+          ;
 
-returndato_f : tipodato
-             | VOID
-             ;
+dec_var : inicializacion listaid PYC ;
 
-declaracion_f_end : PYC
-                  | bloque
-                  ;
+dec_f_pyc : dec_f_params PYC ;
+
+dec_f_blk : dec_f_params bloque ;
+
+dec_f_params : PA params_f PC ;
+
+tipodato : INT
+         | FLOAT
+         | DOUBLE
+         | CHAR
+         | VOID
+         ;
+
+inicializacion : EQ expresion
+               |
+               ;
+
+listaid : COMA ID inicializacion listaid
+        |
+        ;
 
 params_f : tipodato ID listaparams_f
          |
@@ -132,24 +150,6 @@ call_f_factor : ID PA params_call_f PC ;
 params_call_f : expresion listaexpresion
               |
               ;
-
-tipodato : INT
-         | FLOAT
-         | DOUBLE
-         | CHAR
-         ;
-
-tipoasigacion : NUMERO
-              | ID
-              ;
-
-inicializacion : EQ expresion
-               |
-               ;
-
-listaid : COMA ID inicializacion listaid
-        |
-        ;
 
 expresion : expresion_or ;
 
